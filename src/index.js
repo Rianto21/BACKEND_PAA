@@ -4,10 +4,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 const reviewRouter = require("./routes/review.route");
 
-if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
-}
-
 app.use(bodyParser.json());
 app.use(
     bodyParser.urlencoded({
@@ -15,7 +11,6 @@ app.use(
     })
 );
 app.use((req, res, next) => {
-    console.log(res.end);
     next();
 });
 
