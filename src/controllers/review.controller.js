@@ -2,9 +2,14 @@ const review = require("../services/review.service");
 
 async function get(req, res, next) {
     try {
-        res.json(await review.getReview(req.params.id));
+        res.json({
+            status: true,
+            message: "ok",
+            result: await review.getReview(req.query.productId),
+        });
     } catch (err) {
         console.error("Error at review.controller.js GET", err.message);
+        res.json({ status: false, mesage: err.message, result: [] });
     }
 }
 
@@ -13,6 +18,7 @@ async function create(req, res, next) {
         res.json({});
     } catch (err) {
         console.error("Error at review.controller.js GET", err.message);
+        res.json({ status: false, mesage: err.message, result: [] });
     }
 }
 
@@ -21,6 +27,7 @@ async function update(req, res, next) {
         res.json({});
     } catch (err) {
         console.error("Error at review.controller.js GET", err.message);
+        res.json({ status: false, mesage: err.message, result: [] });
     }
 }
 
@@ -29,6 +36,7 @@ async function remove(req, res, next) {
         res.json({});
     } catch (err) {
         console.error("Error at review.controller.js GET", err.message);
+        res.json({ status: false, mesage: err.message, result: [] });
     }
 }
 
