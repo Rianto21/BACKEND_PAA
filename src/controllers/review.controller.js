@@ -28,7 +28,12 @@ async function create(req, res, next) {
 
 async function update(req, res, next) {
     try {
-        res.json({});
+        console.log(req.body, req.params);
+        res.json({
+            status: true,
+            message: "ok",
+            result: await review.updateReview(req.params.id, req.body),
+        });
     } catch (err) {
         console.error("Error at review.controller.js PUT", err.message);
         res.json({ status: false, mesage: err.message, result: [] });
@@ -37,7 +42,11 @@ async function update(req, res, next) {
 
 async function remove(req, res, next) {
     try {
-        res.json({});
+        res.json({
+            status: true,
+            message: "ok",
+            result: await review.deleteReview(req.params.id),
+        });
     } catch (err) {
         console.error("Error at review.controller.js DELETE", err.message);
         res.json({ status: false, mesage: err.message, result: [] });

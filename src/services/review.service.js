@@ -1,3 +1,4 @@
+const { query } = require("express");
 const db = require("./db.service");
 const rPhoto = require("./rphoto.service");
 
@@ -65,7 +66,48 @@ async function createReview(body, files = []) {
     return review;
 }
 
+async function updateReview(review_id, review_body) {
+    let review;
+    try {
+        const query = `UPDATE reviews 
+        SET rating = $1,
+        "review" = $2
+        WHERE review_id = $3
+        RETURNING *;`;
+
+        const res = await db.executeQuery(query, [
+            review_body["rating"],
+            review_body["review"],
+            review_id,
+        ]);
+
+        review = res;
+    } catch (err) {
+        throw Error(err.message);
+    }
+    return review;
+}
+
+async function deleteReview(review_id) {
+    let review;
+    try {
+        const query = `DELETE reviews
+        WHERE review_id = $1
+        RETURNING *;
+        `;
+
+        const res = await db.executeQuery(query, [review_id]);
+
+        review = res[0];
+    } catch (err) {
+        throw Error(err.message);
+    }
+    return review;
+}
+
 module.exports = {
     getReview,
     createReview,
+    updateReview,
+    deleteReview,
 };
