@@ -78,7 +78,7 @@ async function createReview(body, files = []) {
 async function updateReview(review_id, review_body) {
     let review;
     try {
-        const query = `UPDATE reviews 
+        const query = `UPDATE FROM reviews 
         SET rating = $1,
         "review" = $2
         WHERE review_id = $3
@@ -100,7 +100,7 @@ async function updateReview(review_id, review_body) {
 async function deleteReview(review_id) {
     let review;
     try {
-        const query = `DELETE reviews
+        const query = `DELETE FROM reviews
         WHERE review_id = $1
         RETURNING *;
         `;
@@ -108,6 +108,9 @@ async function deleteReview(review_id) {
         const res = await db.executeQuery(query, [review_id]);
 
         review = res[0];
+
+        // Delete review_rphotos, rphotos, and firebase
+        await rPhoto.deleteRPhoto(review_id);
     } catch (err) {
         throw Error(err.message);
     }
