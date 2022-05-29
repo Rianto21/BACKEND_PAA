@@ -90,17 +90,27 @@ async function updateReview(review_id, review_body) {
 
 async function deleteReview(review_id) {
     let review;
+    // delete review_photos
     try {
-        const query = `DELETE reviews
+        const query = `DELETE FROM review_rphotos
+        WHERE review_id = $1;
+        `;
+        const res = await db.executeQuery(query, [review_id]);
+        console.log(res);
+    } catch (err) {
+        throw Error(err.message);
+    }
+
+    // delete review
+    try {
+        const query = `DELETE FROM reviews
         WHERE review_id = $1
         RETURNING *;
         `;
-
         const res = await db.executeQuery(query, [review_id]);
-
-        review = res[0];
-    } catch (err) {
-        throw Error(err.message);
+        review = res;
+    } catch (error) {
+        throw Error(error.message);
     }
     return review;
 }
