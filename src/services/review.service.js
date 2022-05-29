@@ -7,6 +7,14 @@ async function getReview(product_id) {
         if (product_id !== undefined) {
             let query = "SELECT * FROM reviews WHERE product_id = $1";
             res = await db.executeQuery(query, [product_id]);
+            // Get photos
+            for (let i = 0; i < res.length; i++) {
+                let review = res[i];
+                query =
+                    "SELECT rp.url FROM rphotos rp JOIN review_rphotos rr ON rp.rphoto_id = rr.rphoto_id WHERE rr.review_id = $1";
+                const photos = await db.executeQuery(query, [review.review_id]);
+                review.photo = photos.map((photo) => photo.url);
+            }
         } else {
             let query = "SELECT * FROM reviews";
             res = await db.executeQuery(query);
@@ -18,14 +26,7 @@ async function getReview(product_id) {
 }
 
 async function createReview(body, files = []) {
-    if (!files.length || files === undefined) throw Error("No files");
-
-    // Upload to firebase & store it to RPhoto
-    let rphoto_ids = [];
-    for (const file of files) {
-        const rphoto_id = await rPhoto.insertRPhoto(file.path);
-        rphoto_ids.push(rphoto_id);
-    }
+    const hasPhoto = files.length;
 
     // List of required fields
     const fields = ["user_id", "product_id", "rating", "review"];
@@ -51,6 +52,15 @@ async function createReview(body, files = []) {
         review_id = review.review_id;
     } catch (err) {
         throw Error(err.message);
+    }
+
+    if (!hasPhoto) return review;
+
+    // Upload to firebase & store it to RPhoto
+    let rphoto_ids = [];
+    for (const file of files) {
+        const rphoto_id = await rPhoto.insertRPhoto(file.path);
+        rphoto_ids.push(rphoto_id);
     }
 
     // Insert ke reviews_rphoto
