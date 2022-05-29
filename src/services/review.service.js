@@ -99,20 +99,20 @@ async function updateReview(review_id, review_body) {
 
 async function deleteReview(review_id) {
     let review;
+
+    // delete review
     try {
         const query = `DELETE FROM reviews
         WHERE review_id = $1
         RETURNING *;
         `;
-
         const res = await db.executeQuery(query, [review_id]);
+        review = res;
 
-        review = res[0];
-
-        // Delete review_rphotos, rphotos, and firebase
+        // Delete rphotos_review, rphotos, and firebase
         await rPhoto.deleteRPhoto(review_id);
-    } catch (err) {
-        throw Error(err.message);
+    } catch (error) {
+        throw Error(error.message);
     }
     return review;
 }
