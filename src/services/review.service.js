@@ -3,6 +3,7 @@ const rPhoto = require("./rphoto.service");
 
 async function getReview(product_id) {
     let res;
+    if (!Number.isInteger(product_id)) return [];
     try {
         if (product_id !== undefined) {
             let query = "SELECT * FROM reviews WHERE product_id = $1";

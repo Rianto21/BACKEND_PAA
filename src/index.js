@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3000;
 const reviewRouter = require("./routes/review.route");
+const heroku = require("./heroku");
 
 app.use(bodyParser.json());
 app.use(

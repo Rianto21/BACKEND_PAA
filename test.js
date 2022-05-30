@@ -1,5 +1,6 @@
 const db = require("./src/services/db.service");
 const rphoto = require("./src/services/rphoto.service");
+const http = require("http");
 
 async function test() {
     let query = "SELECT * FROM review_rphotos";
@@ -31,5 +32,9 @@ async function d() {
 //   ]
 
 (async () => {
-    await test();
+    // await test();
+    const ww = http.get("http://paa-review.herokuapp.com/", (res) => {
+        console.log(res);
+    });
+    console.log(ww);
 })();
