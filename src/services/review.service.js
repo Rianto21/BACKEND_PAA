@@ -78,6 +78,7 @@ async function createReview(body, files = []) {
 
 async function updateReview(review_id, review_body) {
     let review;
+    if (!Number.isInteger(review_id)) return [];
     try {
         const query = `UPDATE FROM reviews 
         SET rating = $1,
