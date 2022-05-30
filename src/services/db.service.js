@@ -9,7 +9,7 @@ async function executeQuery(query, params = []) {
         await client.end();
         return res.rows;
     } catch (err) {
-        return err.stack;
+        throw Error(err.code);
     }
 }
 

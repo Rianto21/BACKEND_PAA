@@ -81,25 +81,36 @@ async function updateReview(review_id, review_body) {
 
     // List of required fields
     const fields = ["rating", "review"];
+    let fieldData = {};
 
     // Cek field dulu
     fields.forEach((field) => {
-        if (review_body[field] === undefined || review_body[field] === null)
-            throw Error("Missing field");
+        if (typeof review_body[field] !== "undefined")
+            fieldData[field] = review_body[field];
     });
+    if (Object.keys(fieldData).length == 0) throw Error("Missing field");
+    // fieldQuery = parameter apa aja yg perlu diupdate + updatedAt
+    const fieldQuery = [
+        Object.keys(fieldData).map((v, i) => {
+            return `${v} = $${i + 1}`;
+        }),
+        `"updatedAt" = $${Object.keys(fieldData).length + 1}`,
+    ];
+    // fieldData = array isi dari rating / review & review_id
+    fieldData = [
+        ...Object.keys(fieldData).map((v) => {
+            return fieldData[v];
+        }),
+        "NOW()",
+        review_id,
+    ];
 
     try {
-        const query = `UPDATE reviews 
-        SET rating = $1,
-        "review" = $2
-        WHERE review_id = $3
-        RETURNING *;`;
+        const query = `UPDATE reviews SET ${fieldQuery.join(
+            ", "
+        )} WHERE review_id = $${fieldQuery.length + 1} RETURNING *`;
 
-        const res = await db.executeQuery(query, [
-            review_body["rating"],
-            review_body["review"],
-            review_id,
-        ]);
+        const res = await db.executeQuery(query, fieldData);
 
         review = res;
     } catch (err) {
