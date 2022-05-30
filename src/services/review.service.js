@@ -101,7 +101,7 @@ async function updateReview(review_id, review_body) {
 
 async function deleteReview(review_id) {
     let review;
-
+    if (!Number.isInteger(review_id)) return [];
     // delete review
     try {
         const query = `DELETE FROM reviews
