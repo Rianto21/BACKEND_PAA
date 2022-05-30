@@ -3,7 +3,7 @@ const rPhoto = require("./rphoto.service");
 
 async function getReview(product_id) {
     let res;
-    if (!Number.isInteger(product_id)) return [];
+    if (!Number.isInteger(product_id)) throw Error("product_id NaN");
     try {
         if (product_id !== undefined) {
             let query = "SELECT * FROM reviews WHERE product_id = $1";
@@ -78,7 +78,20 @@ async function createReview(body, files = []) {
 
 async function updateReview(review_id, review_body) {
     let review;
-    if (!Number.isInteger(review_id)) return [];
+    if (!Number.isInteger(review_id)) throw Error("review_id NaN");
+
+    // List of required fields
+    const fields = ["rating", "review"];
+
+    // Cek field dulu
+    fields.forEach((field) => {
+        if (review_body[field] === undefined || review_body[field] === null)
+            throw Error("Missing field");
+    });
+
+    // Cek NaN
+    if (!Number.isInteger(review_body["rating"])) throw Error("Rating NaN");
+
     try {
         const query = `UPDATE FROM reviews 
         SET rating = $1,
@@ -101,7 +114,7 @@ async function updateReview(review_id, review_body) {
 
 async function deleteReview(review_id) {
     let review;
-    if (!Number.isInteger(review_id)) return [];
+    if (!Number.isInteger(review_id)) throw Error("review_id NaN");
     // delete review
     try {
         const query = `DELETE FROM reviews
