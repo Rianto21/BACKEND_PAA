@@ -17,8 +17,9 @@ async function getReview(product_id) {
                 review.photo = photos.map((photo) => photo.url);
             }
         } else {
-            let query = "SELECT * FROM reviews";
-            res = await db.executeQuery(query);
+            throw Error("missing parameter");
+            // let query = "SELECT * FROM reviews";
+            // res = await db.executeQuery(query);
         }
     } catch (err) {
         throw Error(err.message);
