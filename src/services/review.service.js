@@ -91,12 +91,11 @@ async function updateReview(review_id, review_body) {
     });
     if (Object.keys(fieldData).length == 0) throw Error("Missing field");
     // fieldQuery = parameter apa aja yg perlu diupdate + updatedAt
-    const fieldQuery = [
-        Object.keys(fieldData).map((v, i) => {
+    const fieldQuery = Object.keys(fieldData)
+        .map((v, i) => {
             return `${v} = $${i + 1}`;
-        }),
-        `"updatedAt" = $${Object.keys(fieldData).length + 1}`,
-    ];
+        })
+        .concat(`"updatedAt" = $${Object.keys(fieldData).length + 1}`);
     // fieldData = array isi dari rating / review & review_id
     fieldData = [
         ...Object.keys(fieldData).map((v) => {
