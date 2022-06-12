@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const reviewRouter = require("./routes/review.route");
 const heroku = require("./heroku");
+const cors = require("cors");
 
 app.use(bodyParser.json());
 app.use(
@@ -11,6 +12,7 @@ app.use(
         extended: false,
     })
 );
+app.use(cors());
 app.use((req, res, next) => {
     next();
 });
