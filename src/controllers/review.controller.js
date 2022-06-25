@@ -18,7 +18,11 @@ async function create(req, res, next) {
         res.json({
             status: true,
             message: "ok",
-            result: await review.createReview(req.body, req.files),
+            result: await review.createReview(
+                req.body,
+                req.files,
+                res.locals.auth.user_id
+            ),
         });
     } catch (err) {
         console.error("Error at review.controller.js POST", err.message);

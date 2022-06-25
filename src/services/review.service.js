@@ -27,16 +27,18 @@ async function getReview(product_id) {
     return res;
 }
 
-async function createReview(body, files = []) {
+async function createReview(body, files = [], user_id) {
     const hasPhoto = files.length;
 
     // List of required fields
-    const fields = ["user_id", "product_id", "rating", "review"];
+    const fields = ["product_id", "rating", "review"];
 
     // Cek field dulu
     fields.forEach((field) => {
-        if (body[field] === undefined || body[field] === null)
+        if (body[field] === undefined || body[field] === null) {
+            console.log(field);
             throw Error("Missing field");
+        }
     });
 
     // Insert ke reviews
@@ -44,9 +46,10 @@ async function createReview(body, files = []) {
     try {
         const query = `INSERT INTO reviews(${fields.join(
             ", "
-        )}, "createdAt", "updatedAt") VALUES($1, $2, $3, $4, $5, $6) RETURNING *`;
+        )}, "user_id", "createdAt", "updatedAt") VALUES($1, $2, $3, $4, $5, $6) RETURNING *`;
         const res = await db.executeQuery(query, [
             ...fields.map((field) => body[field]),
+            user_id,
             "NOW()",
             "NOW()",
         ]);

@@ -19,7 +19,6 @@ function authMiddleware(req, res, next) {
         return;
     } else if (authorization_type == "Bearer") {
         const decoded = jwt_decode(req.headers["authorization"].split(" ")[1]);
-        console.log(decoded);
         if (decoded["user_id"] !== "undefined") {
             res.locals.auth = {
                 user_id: decoded["user_id"],

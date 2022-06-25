@@ -1,25 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-    </head>
 
-    <body>
-        <form
-            action="http://paa-review.herokuapp.com/review"
-            method="POST"
-            enctype="multipart/form-data"
-        >
-            <input type="number" name="user_id" id="user_id" value="1" />
-            <input type="number" name="product_id" id="product_id" value="2" />
-            <input type="number" name="rating" id="rating" value="5" />
-            <input type="text" name="review" id="review" />
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
 
-            <input type="file" name="photo" id="photo" multiple />
-            <input type="submit" />
-        </form>
-    </body>
+<body>
+    <form action="http://paa-review.herokuapp.com/review" method="POST" enctype="multipart/form-data" id="form">
+        <input type="number" name="user_id" id="user_id" value="1" />
+        <input type="number" name="product_id" id="product_id" value="2" />
+        <input type="number" name="rating" id="rating" value="5" />
+        <input type="text" name="review" id="review" />
+
+        <input type="file" name="photo" id="photo" multiple />
+        <input type="submit" />
+    </form>
+    <script>
+        $("#form").on("submit", (e) => {
+            e.preventDefault();
+            var values = $("#form").serialize();
+
+            $.ajax({
+                url: "http://localhost:3000/review",
+                type: "POST",
+                data: values,
+                headers: {
+                    Authorization:
+                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.jYyRJbb0WImFoUUdcslQQfwnXTHJzne-6tsPd8Hrw0I",
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                },
+            });
+        });
+    </script>
+</body>
+
 </html>
